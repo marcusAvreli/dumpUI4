@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+
+<project name="allcars" default="deploy">
+    
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="deploy.dir" value="/home/janbodnar/bin/tomcat/webapps"/>
+    
+    <echo>${ant.project.name}</echo>
+    
+    <target name="init">
+        <mkdir dir="${build.dir}/classes" />
+        <mkdir dir="${dist.dir}"/>
+        <echo>Directories created.</echo>
+    </target>
+    
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.dir}/classes" 
+               includeantruntime="false">
+            <classpath path="lib/servlet-api.jar"/>  
+        </javac>
+        <echo>Source files compiled.</echo>
+    </target>    
+    
+    <target name="archive" depends="compile">
+        <war destfile="${dist.dir}/${ant.project.name}.war" webxml="web.xml">
+            <classes dir="${build.dir}/classes"/>
+            <metainf file="context.xml"/>
+        </war>
+        <echo>Archive created.</echo>
+    </target>    
+    
+    <target name="deploy" depends="archive">
+        <copy file="${dist.dir}/${ant.project.name}.war" todir="${deploy.dir}"/>
+        <echo>Project deployed.</echo>
+    </target>    
+    
+    <target name="clean">
+        <delete dir="${dist.dir}"/>
+        <delete dir="${build.dir}"/>
+        <echo>Project cleaned.</echo>
+    </target>
+    
+</project>
